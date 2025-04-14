@@ -9,14 +9,14 @@ export interface Cliente {
     endereco: string;
     rendaAnual: number;
     patrimonio: number;
-    estadoCivil: “Solteiro” | “Casado” | “Viúvo” | “Divorciado”;
+    estadoCivil: "Solteiro" | "Casado" | "Viúvo" | "Divorciado";
     codigoAgencia: number;
 }
 
 export interface Conta {
     id: string;
     cpfCnpjCliente: string;
-    tipo: “corrente” | “poupanca”
+    tipo: "corrente" | "poupanca";
     saldo: number;
     limiteCredito: number;
     creditoDisponivel: number;
