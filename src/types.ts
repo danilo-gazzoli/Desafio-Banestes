@@ -19,7 +19,7 @@ export interface Conta {
     tipo: “corrente” | “poupanca”
     saldo: number;
     limiteCredito: number;
-   creditoDisponivel: number;
+    creditoDisponivel: number;
 }
 
 export interface Agencia {

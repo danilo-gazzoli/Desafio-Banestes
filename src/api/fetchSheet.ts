@@ -1,5 +1,5 @@
 // biblioteca para converter dados CSV em objetos javascript
-import Papa from "papaparse";
+import * as Papa from "papaparse";
 
 // função generica que busca a planilha na url e converte os dados para um array 
 export async function fetchSheet<T>(url: string): Promise<T[]> {
@@ -15,9 +15,6 @@ export async function fetchSheet<T>(url: string): Promise<T[]> {
 
         // transforma a primeira linha nos nomes dos objetos
         header: true,
-
-        // converte strings numericas para numeros
-        dynamicTyping: true,
 
         // ignora linhas vazias
         skipEmptyLines: true,
