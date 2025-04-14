@@ -19,7 +19,7 @@ export const getClientes = async (): Promise<Cliente[]> => {
         rg: cliente.rg ? String(cliente.rg) : undefined,
         dataNascimento: new Date(cliente.dataNascimento),
         // uma condicional para ver se o campo está preenchido ou nao
-        nomeSocial: cliente.nomeSocial ? String(cliente.nomeSocial?) : undefined,
+        nomeSocial: cliente.nomeSocial ? String(cliente.nomeSocial) : undefined,
         email: String(cliente.email),
         endereco: String(cliente.endereco),
         rendaAnual: Number(cliente.rendaAnual),
