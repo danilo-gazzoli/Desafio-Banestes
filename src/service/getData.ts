@@ -2,9 +2,9 @@ import { Cliente, Conta, Agencia } from "../types";
 import { fetchSheet } from "../api/fetchSheet";
 
 // recupera as urls do arquivo .env
-const URL_CLIENTES = import.meta.env.VITE_URL_CLIENTES;
-const URL_CONTAS = import.meta.env.VITE_URL_CONTAS;
-const URL_AGENCIAS = import.meta.env.VITE_URL_AGENCIAS;
+const URL_CLIENTES = "https://docs.google.com/spreadsheets/d/1PBN_HQOi5ZpKDd63mouxttFvvCwtmY97Tb5if5_cdBA/gviz/tq?tqx=out:csv&sheet=clientes";
+const URL_CONTAS = "https://docs.google.com/spreadsheets/d/1PBN_HQOi5ZpKDd63mouxttFvvCwtmY97Tb5if5_cdBA/gviz/tq?tqx=out:csv&sheet=contas";
+const URL_AGENCIAS = "https://docs.google.com/spreadsheets/d/1PBN_HQOi5ZpKDd63mouxttFvvCwtmY97Tb5if5_cdBA/gviz/tq?tqx=out:csv&sheet=agencias";
 
 // busca a lista de clientes usando a url definida no .env
 export const getClientes = async (): Promise<Cliente[]> => {
