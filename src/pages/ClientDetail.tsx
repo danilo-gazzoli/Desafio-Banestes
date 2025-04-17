@@ -2,7 +2,8 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getClientes, getContas, getAgencias } from '../services/getData';
 import { Cliente, Conta, Agencia } from '../types';
-import { ArrowLeft, Loader, CreditCard, Building2, User } from 'lucide-react';
+import { ArrowLeft, Loader, CreditCard, Building2, User, Wallet, Calendar, Mail, MapPin } from 'lucide-react';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export function ClientDetail() {
   const { id } = useParams();
@@ -25,7 +26,7 @@ export function ClientDetail() {
         const foundClient = clientsData.find(c => c.id === id);
         
         if (!foundClient) {
-          setError('Client not found');
+          setError('Cliente não encontrado');
           setLoading(false);
           return;
         }
@@ -43,7 +44,7 @@ export function ClientDetail() {
         setAgency(clientAgency || null);
         setLoading(false);
       } catch (err) {
-        setError('Error loading client details');
+        setError('Erro ao carregar detalhes do cliente');
         setLoading(false);
       }
     };
@@ -53,16 +54,16 @@ export function ClientDetail() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader className="h-8 w-8 animate-spin text-blue-500" />
+      <div className="flex items-center justify-center h-64" role="status">
+        <Loader className="h-8 w-8 animate-spin text-blue-500" aria-label="Carregando..." />
       </div>
     );
   }
 
   if (error || !client) {
     return (
-      <div className="text-center text-red-600 p-4">
-        {error || 'Client not found'}
+      <div className="text-center text-red-600 p-4" role="alert">
+        {error || 'Cliente não encontrado'}
       </div>
     );
   }
@@ -80,31 +81,34 @@ export function ClientDetail() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb />
+      
       <div className="flex items-center space-x-4">
         <button
           onClick={() => navigate('/')}
-          className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
+          className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
+          aria-label="Voltar para lista de clientes"
         >
-          <ArrowLeft className="h-4 w-4 mr-1" />
-          Back to Clients
+          <ArrowLeft className="h-4 w-4 mr-1" aria-hidden="true" />
+          Voltar para Clientes
         </button>
       </div>
 
       <div className="grid gap-6">
-        {/* Client Information */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        {/* Informações do Cliente */}
+        <section className="bg-white rounded-lg shadow-lg p-6" aria-labelledby="client-info-title">
           <div className="flex items-center mb-6">
-            <User className="h-6 w-6 text-blue-500 mr-2" />
-            <h2 className="text-2xl font-bold">Personal Information</h2>
+            <User className="h-6 w-6 text-blue-500 mr-2" aria-hidden="true" />
+            <h2 id="client-info-title" className="text-2xl font-bold">Informações Pessoais</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Full Name</label>
+                <label className="block text-sm font-medium text-gray-700">Nome Completo</label>
                 <p className="mt-1 text-sm text-gray-900">{client.nome}</p>
                 {client.nomeSocial && (
-                  <p className="mt-1 text-sm text-gray-500">Social Name: {client.nomeSocial}</p>
+                  <p className="mt-1 text-sm text-gray-500">Nome Social: {client.nomeSocial}</p>
                 )}
               </div>
               <div>
@@ -117,77 +121,92 @@ export function ClientDetail() {
                   <p className="mt-1 text-sm text-gray-900">{client.rg}</p>
                 </div>
               )}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Birth Date</label>
-                <p className="mt-1 text-sm text-gray-900">{formatDate(client.dataNascimento)}</p>
+              <div className="flex items-center">
+                <Calendar className="h-4 w-4 text-gray-400 mr-2" aria-hidden="true" />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                  <p className="mt-1 text-sm text-gray-900">{formatDate(client.dataNascimento)}</p>
+                </div>
               </div>
             </div>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <p className="mt-1 text-sm text-gray-900">{client.email}</p>
+              <div className="flex items-center">
+                <Mail className="h-4 w-4 text-gray-400 mr-2" aria-hidden="true" />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <p className="mt-1 text-sm text-gray-900">{client.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <MapPin className="h-4 w-4 text-gray-400 mr-2" aria-hidden="true" />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Endereço</label>
+                  <p className="mt-1 text-sm text-gray-900">{client.endereco}</p>
+                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Address</label>
-                <p className="mt-1 text-sm text-gray-900">{client.endereco}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Civil Status</label>
+                <label className="block text-sm font-medium text-gray-700">Estado Civil</label>
                 <p className="mt-1 text-sm text-gray-900">{client.estadoCivil}</p>
               </div>
             </div>
           </div>
 
           <div className="mt-6 pt-6 border-t border-gray-200">
-            <h3 className="text-lg font-semibold mb-4">Financial Information</h3>
+            <h3 className="text-lg font-semibold mb-4">Informações Financeiras</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-blue-50 p-4 rounded-lg">
-                <label className="block text-sm font-medium text-blue-700">Annual Income</label>
+                <div className="flex items-center">
+                  <Wallet className="h-5 w-5 text-blue-500 mr-2" aria-hidden="true" />
+                  <label className="block text-sm font-medium text-blue-700">Renda Anual</label>
+                </div>
                 <p className="mt-1 text-lg font-semibold text-blue-900">
                   {formatCurrency(client.rendaAnual)}
                 </p>
               </div>
               <div className="bg-green-50 p-4 rounded-lg">
-                <label className="block text-sm font-medium text-green-700">Total Assets</label>
+                <div className="flex items-center">
+                  <Building2 className="h-5 w-5 text-green-500 mr-2" aria-hidden="true" />
+                  <label className="block text-sm font-medium text-green-700">Patrimônio</label>
+                </div>
                 <p className="mt-1 text-lg font-semibold text-green-900">
                   {formatCurrency(client.patrimonio)}
                 </p>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Agency Information */}
+        {/* Informações da Agência */}
         {agency && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <section className="bg-white rounded-lg shadow-lg p-6" aria-labelledby="agency-info-title">
             <div className="flex items-center mb-6">
-              <Building2 className="h-6 w-6 text-blue-500 mr-2" />
-              <h2 className="text-2xl font-bold">Associated Agency</h2>
+              <Building2 className="h-6 w-6 text-blue-500 mr-2" aria-hidden="true" />
+              <h2 id="agency-info-title" className="text-2xl font-bold">Agência Associada</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Agency Code</label>
+                <label className="block text-sm font-medium text-gray-700">Código da Agência</label>
                 <p className="mt-1 text-sm text-gray-900">{agency.codigo}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
+                <label className="block text-sm font-medium text-gray-700">Nome</label>
                 <p className="mt-1 text-sm text-gray-900">{agency.nome}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Address</label>
+                <label className="block text-sm font-medium text-gray-700">Endereço</label>
                 <p className="mt-1 text-sm text-gray-900">{agency.endereco}</p>
               </div>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Accounts Information */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        {/* Informações das Contas */}
+        <section className="bg-white rounded-lg shadow-lg p-6" aria-labelledby="accounts-info-title">
           <div className="flex items-center mb-6">
-            <CreditCard className="h-6 w-6 text-blue-500 mr-2" />
-            <h2 className="text-2xl font-bold">Associated Accounts</h2>
+            <CreditCard className="h-6 w-6 text-blue-500 mr-2" aria-hidden="true" />
+            <h2 id="accounts-info-title" className="text-2xl font-bold">Contas Associadas</h2>
           </div>
           
           {accounts.length > 0 ? (
@@ -195,10 +214,18 @@ export function ClientDetail() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Account Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Balance</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Credit Limit</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Available Credit</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Tipo de Conta
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Saldo
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Limite de Crédito
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Crédito Disponível
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -208,7 +235,9 @@ export function ClientDetail() {
                         <span className="capitalize">{account.tipo}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {formatCurrency(account.saldo)}
+                        <span className={account.saldo >= 0 ? 'text-green-600' : 'text-red-600'}>
+                          {formatCurrency(account.saldo)}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {formatCurrency(account.limiteCredito)}
@@ -222,9 +251,9 @@ export function ClientDetail() {
               </table>
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-4">No accounts found for this client.</p>
+            <p className="text-gray-500 text-center py-4">Nenhuma conta encontrada para este cliente.</p>
           )}
-        </div>
+        </section>
       </div>
     </div>
   );
