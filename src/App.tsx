@@ -7,6 +7,7 @@ import { AgencyList } from './pages/AgencyList';
 import { AgencyDetail } from './pages/AgencyDetail';
 import { AccountList } from './pages/AccountList';
 import { AccountDetail } from './pages/AccountDetail';
+import { ChatAI } from './pages/ChatAI';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/agencies/:id" element={<AgencyDetail />} />
           <Route path="/accounts" element={<AccountList />} />
           <Route path="/accounts/:id" element={<AccountDetail />} />
+          <Route path="/chat" element={<ChatAI />} />
         </Routes>
       </Layout>
     </Router>

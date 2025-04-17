@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SearchBar } from '../components/SearchBar';
 import { Pagination } from '../components/Pagination';
+import { Breadcrumb } from '../components/Breadcrumb';
 import { getAgencias } from '../services/getData';
 import { Agencia } from '../types';
 import { Loader } from 'lucide-react';
@@ -33,7 +34,8 @@ export function AgencyList() {
   const filteredAgencies = React.useMemo(() => {
     return agencies.filter(agency => 
       agency.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      agency.codigo.toString().includes(searchTerm)
+      agency.codigo.toString().includes(searchTerm) ||
+      agency.endereco.toLowerCase().includes(searchTerm)
     );
   }, [agencies, searchTerm]);
 
@@ -47,7 +49,7 @@ export function AgencyList() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader className="h-8 w-8 animate-spin text-blue-500" />
+        <Loader className="h-8 w-8 animate-spin text-[#004B8D]" />
       </div>
     );
   }
@@ -62,13 +64,15 @@ export function AgencyList() {
 
   return (
     <div className="space-y-4">
+      <Breadcrumb />
+      
       <div className="sm:flex sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Agencies</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Agências</h1>
         <div className="mt-4 sm:mt-0">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="Search by name or code..."
+            placeholder="Buscar por nome, código ou endereço..."
           />
         </div>
       </div>
@@ -78,15 +82,18 @@ export function AgencyList() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Endereço</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedAgencies.map((agency) => (
-                <tr key={agency.id} className="hover:bg-gray-50">
+                <tr 
+                  key={agency.id}
+                  onClick={() => navigate(`/agencies/${agency.id}`)}
+                  className="hover:bg-gray-50 cursor-pointer"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{agency.codigo}</div>
                   </td>
@@ -95,14 +102,6 @@ export function AgencyList() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-500">{agency.endereco}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button
-                      onClick={() => navigate(`/agencies/${agency.id}`)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      View Details
-                    </button>
                   </td>
                 </tr>
               ))}
