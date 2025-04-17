@@ -1,10 +1,12 @@
 import React from 'react';
 import { SearchBar } from '../components/SearchBar';
 import { Pagination } from '../components/Pagination';
+import { Breadcrumb } from '../components/Breadcrumb';
 
 export function AccountList() {
   return (
     <div className="container mx-auto px-4 py-8">
+      <Breadcrumb />
       <h1 className="text-3xl font-bold mb-6">Accounts</h1>
       <SearchBar />
       <div className="bg-white rounded-lg shadow mt-6">
