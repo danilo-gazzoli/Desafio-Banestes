@@ -3,11 +3,5 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ],
-  "compilerOptions": {
-    "module": "es2022",
-    "moduleResolution": "Node",
-    "esModuleInterop": true
-  },
-  "include": ["src", "vite-env.d.ts"]
+  ]
 }
