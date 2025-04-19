@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Users, Building2, CreditCard, Menu, X, MessageSquare } from 'lucide-react';
+import { Users, Building2, CreditCard, Menu, X, MessageSquare, LayoutDashboard } from 'lucide-react';
 import { clsx } from 'clsx';
 
 interface LayoutProps {
@@ -29,7 +29,8 @@ export function Layout({ children }: LayoutProps) {
   }, []);
 
   const navigation = [
-    { name: 'Clientes', href: '/', icon: Users },
+    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Clientes', href: '/clients', icon: Users },
     { name: 'Agências', href: '/agencies', icon: Building2 },
     { name: 'Contas', href: '/accounts', icon: CreditCard },
     { name: 'Chat AI', href: '/chat', icon: MessageSquare },

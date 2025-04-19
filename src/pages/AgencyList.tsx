@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SearchBar } from '../components/SearchBar';
 import { Pagination } from '../components/Pagination';
 import { Breadcrumb } from '../components/Breadcrumb';
-import { getAgencias } from '../services/getData';
+import { getAgencias } from '../service/getData';
 import { Agencia } from '../types';
 import { Loader } from 'lucide-react';
 

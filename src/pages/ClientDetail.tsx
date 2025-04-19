@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getClientes, getContas, getAgencias } from '../services/getData';
+import { getClientes, getContas, getAgencias } from '../service/getData';
 import { Cliente, Conta, Agencia } from '../types';
 import { ArrowLeft, Loader, CreditCard, Building2, User, Wallet, Calendar, Mail, MapPin } from 'lucide-react';
 import { Breadcrumb } from '../components/Breadcrumb';

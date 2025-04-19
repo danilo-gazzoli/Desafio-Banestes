@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SearchBar } from '../components/SearchBar';
 import { Pagination } from '../components/Pagination';
 import { Breadcrumb } from '../components/Breadcrumb';
-import { getClientes } from '../services/getData';
+import { getClientes } from '../service/getData';
 import { Cliente } from '../types';
 import { Filter, Loader } from 'lucide-react';
 
