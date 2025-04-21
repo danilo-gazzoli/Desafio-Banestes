@@ -1,17 +1,31 @@
 import React from 'react';
+// componentes reutilizados
 import { SearchBar } from '../components/SearchBar';
 import { Pagination } from '../components/Pagination';
 import { Breadcrumb } from '../components/Breadcrumb';
+// funcao que busca a lista de contas
 import { getContas } from '../service/getData';
+// define a estrutura esperada por cada elemento
 import { Conta } from '../types';
 import { Filter, Loader } from 'lucide-react';
 
 export function AccountList() {
+  // armazena a lista requisitada via api
   const [accounts, setAccounts] = React.useState<Conta[]>([]);
+
+  // define o status de carregamento
   const [loading, setLoading] = React.useState(true);
+
+  // controla o estado de possiveis falhas
   const [error, setError] = React.useState<string | null>(null);
+
+  // define o termo de busca
   const [searchTerm, setSearchTerm] = React.useState('');
+
+  // armazena a pagina atual da paginacao
   const [currentPage, setCurrentPage] = React.useState(1);
+
+  // controla a exibicao avancada do painel de filtros
   const [showFilters, setShowFilters] = React.useState(false);
   const [filters, setFilters] = React.useState({
     tipo: '',
@@ -21,13 +35,19 @@ export function AccountList() {
     limiteCreditoMax: ''
   });
 
+  // numero de itens mostrados em cada paginacao
   const itemsPerPage = 10;
 
   React.useEffect(() => {
     const fetchAccounts = async () => {
       try {
+        // faz a requisicao da lista de contas
         const data = await getContas();
+
+        // armazena a lista
         setAccounts(data);
+
+        // encerra o carregamento
         setLoading(false);
       } catch (err) {
         setError('Erro ao carregar as contas');
@@ -38,7 +58,9 @@ export function AccountList() {
     fetchAccounts();
   }, []);
 
+  // faz a formatacao da moeda
   const formatCurrency = (value: number) => {
+    // recebe o numero e retorna uma string formatada em real brasileiro
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
@@ -47,18 +69,22 @@ export function AccountList() {
 
   const filteredAccounts = React.useMemo(() => {
     return accounts.filter(account => {
+      // filtro por cpfCnpj
       const matchesSearch = (
         account.cpfCnpjCliente.includes(searchTerm) ||
         account.tipo.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
+      // filtro por tipo de conta
       const matchesTipo = !filters.tipo || account.tipo === filters.tipo;
       
+      // filtro por faixa de saldo
       const matchesSaldo = (
         (!filters.saldoMin || account.saldo >= Number(filters.saldoMin)) &&
         (!filters.saldoMax || account.saldo <= Number(filters.saldoMax))
       );
 
+      // filtro por faixa de limite de credito
       const matchesLimiteCredito = (
         (!filters.limiteCreditoMin || account.limiteCredito >= Number(filters.limiteCreditoMin)) &&
         (!filters.limiteCreditoMax || account.limiteCredito <= Number(filters.limiteCreditoMax))
@@ -68,13 +94,19 @@ export function AccountList() {
     });
   }, [accounts, searchTerm, filters]);
 
+
   const paginatedAccounts = React.useMemo(() => {
+    // indice inicial para a pagina atual
     const start = (currentPage - 1) * itemsPerPage;
+
+    // retorna apenas o subconjunto de contas da pagina
     return filteredAccounts.slice(start, start + itemsPerPage);
   }, [filteredAccounts, currentPage]);
 
+  // calcula o total de paginas
   const totalPages = Math.ceil(filteredAccounts.length / itemsPerPage);
 
+  // recebe animacao de carregamento
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -83,6 +115,7 @@ export function AccountList() {
     );
   }
 
+  // retorna mensagem de erro caso algo de errado
   if (error) {
     return (
       <div className="text-center text-red-600 p-4">
@@ -91,18 +124,21 @@ export function AccountList() {
     );
   }
 
+  // renderiza a pagina principal
   return (
     <div className="space-y-4">
       <Breadcrumb />
-      
+      { /* Breadcrumb no topo da pagina */ }
       <div className="sm:flex sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">Contas</h1>
         <div className="mt-4 sm:mt-0 sm:flex sm:items-center sm:space-x-4">
+          { /* SearchBar para busca rapida */ }
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Buscar por CPF/CNPJ ou tipo de conta..."
           />
+          { /* Botao que alterna showFilters */ }
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="mt-2 sm:mt-0 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
@@ -129,6 +165,7 @@ export function AccountList() {
               </select>
             </div>
             
+            { /* Filtros avancados */ }
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Saldo</label>
               <div className="grid grid-cols-2 gap-2">
@@ -172,6 +209,7 @@ export function AccountList() {
         </div>
       )}
 
+      { /* Tabela de resultados */ }
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -213,6 +251,7 @@ export function AccountList() {
         </div>
       </div>
 
+      { /* Paginacao */ }
       {filteredAccounts.length > itemsPerPage && (
         <Pagination
           currentPage={currentPage}

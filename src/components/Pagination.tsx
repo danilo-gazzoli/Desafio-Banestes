@@ -2,18 +2,23 @@ import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { clsx } from 'clsx';
 
+// interface da paginacao
 interface PaginationProps {
   currentPage: number;
-  totalPages: number;
+  totalPages: number; 
   onPageChange: (page: number) => void;
 }
 
+// retorna o componente inteiro
 export function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
   return (
     <nav role="navigation" aria-label="Navegação da paginação" className="flex items-center justify-between px-4 py-3 sm:px-6">
       <div className="flex-1 flex justify-between sm:hidden">
         <button
+          // calcula a pagina anterior 
           onClick={() => onPageChange(currentPage - 1)}
+
+          // define a pagina atual
           disabled={currentPage === 1}
           aria-label="Página anterior"
           className={clsx(
@@ -26,7 +31,10 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Pagination
           Anterior
         </button>
         <button
+          // calcula proxima pagina
           onClick={() => onPageChange(currentPage + 1)}
+
+          // define a pagina atual
           disabled={currentPage === totalPages}
           aria-label="Próxima página"
           className={clsx(

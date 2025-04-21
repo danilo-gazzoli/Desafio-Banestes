@@ -28,3 +28,8 @@ export interface Agencia {
   nome: string;
   endereco: string;
 }
+
+export interface Mensagem {
+  role: 'user' | 'assistant';
+  content: string;
+}

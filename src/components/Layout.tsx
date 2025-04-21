@@ -1,25 +1,38 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+// importa os icones
 import { Users, Building2, CreditCard, Menu, X, MessageSquare, LayoutDashboard } from 'lucide-react';
 import { clsx } from 'clsx';
 
+// define que o componente recebe o conteudo interno
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
+  // controla a barra lateral na tela mobile
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+
+  // instacia o objeto useLocation com a funcao pathname
   const location = useLocation();
+
+  // referencia ao botao que abre e fecha o menu
   const menuButtonRef = React.useRef<HTMLButtonElement>(null);
+
+  // container do menu
   const menuRef = React.useRef<HTMLDivElement>(null);
 
+  // realiza o efeito de esconder o menu ao clicar fora
   React.useEffect(() => {
+    // se o usuario fizer um clique, verifica se foi dentro ou fora do menu do botao
     const handleClickOutside = (event: MouseEvent) => {
       if (
+        // se sim 
         menuRef.current &&
         !menuRef.current.contains(event.target as Node) &&
         !menuButtonRef.current?.contains(event.target as Node)
       ) {
+        // define o menu mobile como falso
         setIsMobileMenuOpen(false);
       }
     };
@@ -28,6 +41,7 @@ export function Layout({ children }: LayoutProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // lista de objetos das secoes com nome e rota
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
     { name: 'Clientes', href: '/clients', icon: Users },
@@ -38,7 +52,8 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile menu button */}
+      {/* botao de menu do mobile */}
+      { /* renderiza apenas em telas menores que lg devido a tag lg:hidden */ }
       <div className="lg:hidden fixed top-4 right-4 z-50">
         <button
           ref={menuButtonRef}
@@ -47,6 +62,7 @@ export function Layout({ children }: LayoutProps) {
           aria-expanded={isMobileMenuOpen}
           aria-label="Menu principal"
         >
+          { /* alterna isMobileMenuOpen ao clicar e exibe o icone de menu */}
           {isMobileMenuOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
         </button>
       </div>
@@ -87,7 +103,7 @@ export function Layout({ children }: LayoutProps) {
         </nav>
       </aside>
 
-      {/* Main content */}
+      {/* secao principal */}
       <main
         className={clsx(
           "transition-all duration-200 ease-in-out",

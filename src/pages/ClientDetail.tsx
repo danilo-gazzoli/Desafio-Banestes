@@ -6,45 +6,76 @@ import { ArrowLeft, Loader, CreditCard, Building2, User, Wallet, Calendar, Mail,
 import { Breadcrumb } from '../components/Breadcrumb';
 
 export function ClientDetail() {
+  // pega o valor de id da url
   const { id } = useParams();
+
+  // instancia o useNavigate para transitar entre as paginas
   const navigate = useNavigate();
+
+  // armazena o Cliente selecionado
   const [client, setClient] = React.useState<Cliente | null>(null);
+
+  // armazena a lista de contas associadas ao cliente selecionado
   const [accounts, setAccounts] = React.useState<Conta[]>([]);
+
+  // armazena a agencia relacionada com o cliente
   const [agency, setAgency] = React.useState<Agencia | null>(null);
+
+  // controla o carregamento
   const [loading, setLoading] = React.useState(true);
+
+  // gerencia as mensagens de erro
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const fetchClientDetails = async () => {
       try {
+        // faz a requisicao da lista de clientes, contas e agencias em paralelo
         const [clientsData, accountsData, agenciesData] = await Promise.all([
           getClientes(),
           getContas(),
           getAgencias()
         ]);
 
+        // filtra o cliente na lista pelo id da url
         const foundClient = clientsData.find(c => c.id === id);
         
+        // se nao achar o cliente
         if (!foundClient) {
+          // define mensagem de erro
           setError('Cliente não encontrado');
+
+          // encerra o carregamento
           setLoading(false);
           return;
         }
 
+        // filtra as contas com base no cpfCnpj do cliente selecionado
         const clientAccounts = accountsData.filter(
           account => account.cpfCnpjCliente === foundClient.cpfCnpj
         );
         
+        // filtra a agencia associada pelo codigoAgencia do cliente selecionado
         const clientAgency = agenciesData.find(
           agency => agency.codigo === foundClient.codigoAgencia
         );
 
+        // define o cliente encontrado
         setClient(foundClient);
+
+        // define as contas encontradas
         setAccounts(clientAccounts);
+
+        // define a agencia encontrada
         setAgency(clientAgency || null);
+
+        // encerra o carregamento
         setLoading(false);
       } catch (err) {
+        // define a mensagem de erro
         setError('Erro ao carregar detalhes do cliente');
+
+        // encerra o carregamento
         setLoading(false);
       }
     };
@@ -52,6 +83,7 @@ export function ClientDetail() {
     fetchClientDetails();
   }, [id]);
 
+  // exibe animacao de carregamento
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64" role="status">
@@ -60,6 +92,7 @@ export function ClientDetail() {
     );
   }
 
+  // exibe erro se o cliente nao for encontrado
   if (error || !client) {
     return (
       <div className="text-center text-red-600 p-4" role="alert">
@@ -68,22 +101,28 @@ export function ClientDetail() {
     );
   }
 
+  // formata o valor para brl
   const formatCurrency = (value: number) => {
+    // recebe um numero e retorna uma string formatada em real brasileiro
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
   };
 
+  // formata o valor do campo data para o tipo Date
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('pt-BR').format(new Date(date));
   };
 
+  // carrega a pagina principal
   return (
     <div className="space-y-6">
       <Breadcrumb />
-      
+      { /* Breadcrumb no topo da pagina*/ }
       <div className="flex items-center space-x-4">
+        { /* Botao que retorna para a lista de clientes*/ }
+        { /* Usa o navigate para navegar entre paginas */ }
         <button
           onClick={() => navigate('/')}
           className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"

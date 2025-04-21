@@ -33,27 +33,46 @@ ChartJS.register(
 );
 
 export function Dashboard() {
+  // referencia ao container inteiro
   const dashboardRef = React.useRef<HTMLDivElement>(null);
+
+  // armazena a lista de clientes
   const [clients, setClients] = React.useState<Cliente[]>([]);
+
+  // armazena lista de contas
   const [accounts, setAccounts] = React.useState<Conta[]>([]);
+
+  // armazena lista de agencias
   const [agencies, setAgencies] = React.useState<Agencia[]>([]);
+
+  // faz o gerenciamento de loading
   const [loading, setLoading] = React.useState(true);
+
+  // define os erros
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
+        // faz as requisicoes dos clientes, contas e agencias paralelamete
         const [clientsData, accountsData, agenciesData] = await Promise.all([
           getClientes(),
           getContas(),
           getAgencias()
         ]);
+
+        // armazena as respostas das requisicoes
         setClients(clientsData);
         setAccounts(accountsData);
         setAgencies(agenciesData);
+
+        // encerra o carregamento
         setLoading(false);
       } catch (err) {
+        // retorna mensagem de erro
         setError('Erro ao carregar dados do dashboard');
+
+        // encerra o carregamento
         setLoading(false);
       }
     };
@@ -61,14 +80,18 @@ export function Dashboard() {
     fetchData();
   }, []);
 
+  // converte os numeros para brl
   const formatCurrency = (value: number) => {
+    // recebe um numero e retorna uma string formatada em real brasileiro
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
   };
 
+  // converte numeros para porcentagem
   const formatPercentage = (value: number) => {
+    // recebe um numero re retorna uma porcentagem formatada em pt-br
     return new Intl.NumberFormat('pt-BR', {
       style: 'percent',
       minimumFractionDigits: 1,
@@ -76,58 +99,80 @@ export function Dashboard() {
     }).format(value);
   };
 
+  // exporta o dashboard para pdf
   const exportToPDF = async () => {
+    // retorna se o container do dashboard estiver vazio
     if (!dashboardRef.current) return;
 
     try {
+      // captura o conteudo do container com html2canvas
       const canvas = await html2canvas(dashboardRef.current, {
         scale: 2,
         logging: false,
         useCORS: true
       });
 
+      // converte em imagem png
       const imgData = canvas.toDataURL('image/png');
+
+      // cria um pdf vazio
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a4'
       });
 
+      // define dimensoes do pdf
       const imgWidth = 297;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
+      // adiciona a imagem com o conteudo do dashboard
       pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+      // faz o Download do pdf
       pdf.save('dashboard-report.pdf');
     } catch (error) {
+      // retorna um erro se nao conseguir gerar o pdf
       console.error('Error generating PDF:', error);
     }
   };
 
-  // Overview calculations
+  // calculos totais gerais
   const totalClients = clients.length;
   const totalAccounts = accounts.length;
   const totalEquity = clients.reduce((sum, client) => sum + client.patrimonio, 0);
   const totalBalance = accounts.reduce((sum, account) => sum + account.saldo, 0);
 
-  // Distribution calculations
+  // distribuicoes dos tipos de contas
   const accountTypeDistribution = {
     corrente: accounts.filter(a => a.tipo === 'corrente').length,
     poupanca: accounts.filter(a => a.tipo === 'poupanca').length
   };
 
+  // distribuicao por status civil
   const maritalStatusDistribution = clients.reduce((acc, client) => {
     acc[client.estadoCivil] = (acc[client.estadoCivil] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
-  // Agency performance calculations
+  // calculo de performace por agencia
   const agencyPerformance = agencies.map(agency => {
+    // filtra clientes por agencia
     const agencyClients = clients.filter(c => c.codigoAgencia === agency.codigo);
+
+    // mapeia os clientes por cpfCnpj
     const clientCpfCnpjs = agencyClients.map(c => c.cpfCnpj);
+
+    // filtra as contas pelos cpfCnpj dos clientes
     const agencyAccounts = accounts.filter(a => clientCpfCnpjs.includes(a.cpfCnpjCliente));
     
+    // soma de depositos
     const totalDeposits = agencyAccounts.reduce((sum, account) => sum + account.saldo, 0);
+
+    // soma de patromonios
     const totalEquity = agencyClients.reduce((sum, client) => sum + client.patrimonio, 0);
+
+    // ordena pelo maior numero de clientes
     const averageEquity = agencyClients.length > 0 ? totalEquity / agencyClients.length : 0;
 
     return {
@@ -139,10 +184,17 @@ export function Dashboard() {
     };
   }).sort((a, b) => b.clientCount - a.clientCount);
 
-  // Risk indicators
+  // indicadores de risco
+  // total de contas negativas
   const negativeBalanceAccounts = accounts.filter(a => a.saldo < 0);
+
+  // total de prejuizo
   const totalNegativeBalance = negativeBalanceAccounts.reduce((sum, account) => sum + account.saldo, 0);
+
+  // total de credito disponivel
   const totalAvailableCredit = accounts.reduce((sum, account) => sum + account.creditoDisponivel, 0);
+
+  // credito utilizado
   const averageCreditUtilization = accounts.reduce((sum, account) => {
     const utilization = account.limiteCredito > 0 
       ? (account.limiteCredito - account.creditoDisponivel) / account.limiteCredito 
@@ -150,7 +202,7 @@ export function Dashboard() {
     return sum + utilization;
   }, 0) / accounts.length;
 
-  // Chart configurations
+  // configuracoes de graficos
   const accountTypeChartData: ChartData<'doughnut'> = {
     labels: ['Contas Correntes', 'Contas Poupança'],
     datasets: [{
@@ -232,6 +284,7 @@ export function Dashboard() {
     }
   };
 
+  // exibe animacao de carregamento
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -240,6 +293,7 @@ export function Dashboard() {
     );
   }
 
+  // exibe mensagem de erro
   if (error) {
     return (
       <div className="text-center text-red-600 p-4">
@@ -248,10 +302,13 @@ export function Dashboard() {
     );
   }
 
+  // carrega a pagina principal
   return (
     <div className="space-y-6 max-w-[2000px] mx-auto px-4">
       <div className="flex justify-between items-center">
+        { /* Breadcrumb no topo da pagina */ }
         <Breadcrumb />
+        { /* Botao para baixar pdf */ }
         <button
           onClick={exportToPDF}
           className="inline-flex items-center px-4 py-2 bg-[#004B8D] text-white rounded-lg hover:bg-[#003865] transition-colors"
@@ -264,7 +321,7 @@ export function Dashboard() {
       <div ref={dashboardRef}>
         <h1 className="text-2xl font-bold text-gray-900 py-3">Dashboard</h1>
 
-        {/* Overview Cards */}
+        {/* Secoes de analise geral */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
@@ -307,7 +364,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Distribution Charts */}
+        {/* Distribuicao de graficos */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-3">
           <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <h2 className="text-lg font-semibold mb-4">Distribuição por Tipo de Conta</h2>
@@ -374,7 +431,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Agency Performance */}
+        {/* Performance de agencias */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-3">
           <div className="bg-white rounded-lg shadow p-4 sm:p-6">
             <h2 className="text-lg font-semibold mb-4">Top 5 Agências</h2>
@@ -449,7 +506,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Risk Indicators */}
+        {/* Indicadores de risco */}
         <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <h2 className="text-lg font-semibold mb-4">Indicadores de Risco</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

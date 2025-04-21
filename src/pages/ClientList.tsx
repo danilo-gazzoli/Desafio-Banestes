@@ -8,11 +8,22 @@ import { Cliente } from '../types';
 import { Filter, Loader } from 'lucide-react';
 
 export function ClientList() {
+  // armazerna a lista de clientes requisitada via api
   const [clients, setClients] = React.useState<Cliente[]>([]);
+
+  // define o status do carregamento
   const [loading, setLoading] = React.useState(true);
+  
+  // controla o estado de possiveis falhas
   const [error, setError] = React.useState<string | null>(null);
+
+  // armazena o termo de busca
   const [searchTerm, setSearchTerm] = React.useState('');
+
+  // armazena a pagina atual da paginacao 
   const [currentPage, setCurrentPage] = React.useState(1);
+
+  // controla a exibicao avancada do painel de filtros
   const [showFilters, setShowFilters] = React.useState(false);
   const [filters, setFilters] = React.useState({
     estadoCivil: '',
@@ -22,17 +33,28 @@ export function ClientList() {
     patrimonioMax: ''
   });
   
+  // instancia useNavigate para transitar para a pagina de detalhes de clientes
   const navigate = useNavigate();
+
+  // numero de itens em cada paginacao
   const itemsPerPage = 10;
 
   React.useEffect(() => {
     const fetchClients = async () => {
       try {
+        // faz a requisicao da lista de clientes
         const data = await getClientes();
+
+        // define a lista de clientes
         setClients(data);
+
+        // encerra o carregamento
         setLoading(false);
       } catch (err) {
+        // define a mensagem de erro
         setError('Erro ao carregar os clientes');
+
+        // encerra o carregamento
         setLoading(false);
       }
     };
@@ -40,7 +62,9 @@ export function ClientList() {
     fetchClients();
   }, []);
 
+  // faz a formatacao para brl
   const formatCurrency = (value: number) => {
+    // recebe o numero e retorna uma string formatada em real brasileiro
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
@@ -49,35 +73,45 @@ export function ClientList() {
 
   const filteredClients = React.useMemo(() => {
     return clients.filter(client => {
+      // filtro por nome, cpfCnpj e email
       const matchesSearch = (
         client.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
         client.cpfCnpj.includes(searchTerm) ||
         client.email.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
+      // filtro por estadoCivil
       const matchesEstadoCivil = !filters.estadoCivil || client.estadoCivil === filters.estadoCivil;
       
+      // filtro por faixa de renda
       const matchesRenda = (
         (!filters.rendaMin || client.rendaAnual >= Number(filters.rendaMin)) &&
         (!filters.rendaMax || client.rendaAnual <= Number(filters.rendaMax))
       );
 
+      // filtro por faixa de patrimonio
       const matchesPatrimonio = (
         (!filters.patrimonioMin || client.patrimonio >= Number(filters.patrimonioMin)) &&
         (!filters.patrimonioMax || client.patrimonio <= Number(filters.patrimonioMax))
       );
 
+      // retorna os filtros
       return matchesSearch && matchesEstadoCivil && matchesRenda && matchesPatrimonio;
     });
   }, [clients, searchTerm, filters]);
 
   const paginatedClients = React.useMemo(() => {
+    // calcula o indice inicial para a pagina atual
     const start = (currentPage - 1) * itemsPerPage;
+
+    // retorna apenas o subconjunto de contas da pagina
     return filteredClients.slice(start, start + itemsPerPage);
   }, [filteredClients, currentPage]);
 
+  // calcula o total de paginas
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
+  // exibe a animacao de carregamento
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -86,6 +120,7 @@ export function ClientList() {
     );
   }
 
+  // retorna mensagem de erro caso algo de errado
   if (error) {
     return (
       <div className="text-center text-red-600 p-4">
@@ -94,18 +129,21 @@ export function ClientList() {
     );
   }
 
+  // retorna a pagina principal
   return (
     <div className="space-y-4">
       <Breadcrumb />
-      
+      { /* Breadcrumb no topo da pagina */ }
       <div className="sm:flex sm:items-center sm:justify-between">
         <h1 className="text-2xl font-semibold text-gray-900">Clientes</h1>
         <div className="mt-4 sm:mt-0 sm:flex sm:items-center sm:space-x-4">
+          { /* SearchBar para busca rapida */ }
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder="Buscar por nome, CPF/CNPJ ou email..."
           />
+          { /* Botao que alterna o estad do componente de filtro */ }
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="mt-2 sm:mt-0 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
@@ -134,6 +172,7 @@ export function ClientList() {
               </select>
             </div>
             
+            { /* Filtros avancados */ }
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Renda Anual</label>
               <div className="grid grid-cols-2 gap-2">
@@ -177,6 +216,7 @@ export function ClientList() {
         </div>
       )}
 
+      { /* Tabela de resultados */ }
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -190,6 +230,7 @@ export function ClientList() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
+              { /* Uso do navigate para redirecionar para a pagina de detalhes de cliente */ }
               {paginatedClients.map((client) => (
                 <tr 
                   key={client.id}
@@ -221,6 +262,7 @@ export function ClientList() {
         </div>
       </div>
 
+      { /* Paginacao */ }
       {filteredClients.length > itemsPerPage && (
         <Pagination
           currentPage={currentPage}

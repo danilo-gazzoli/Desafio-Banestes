@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search } from 'lucide-react';
 
+// interface da barra de pesquisa
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;

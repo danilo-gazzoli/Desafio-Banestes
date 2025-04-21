@@ -6,45 +6,73 @@ import { ArrowLeft, Loader, Building2, Users, CreditCard } from 'lucide-react';
 import { Breadcrumb } from '../components/Breadcrumb';
 
 export function AgencyDetail() {
+  // pega o valor de id da url
   const { id } = useParams();
+  
+  // instancia o useNavigate para transitar entre as paginas
   const navigate = useNavigate();
+
+  // armazena a agencia selecionada
   const [agency, setAgency] = React.useState<Agencia | null>(null);
+
+  // armazena a lista de clientes associados com a agencia selecionada
   const [clients, setClients] = React.useState<Cliente[]>([]);
+
+  // armazena as contas associadas com a agencia selecionada
   const [accounts, setAccounts] = React.useState<Conta[]>([]);
+
+  // controla o carregamento
   const [loading, setLoading] = React.useState(true);
+
+  // define as mensagens de erro
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const fetchAgencyDetails = async () => {
       try {
+        // faz a requisicao da lista de agencias, clientes e contas em paralelo
         const [agenciesData, clientsData, accountsData] = await Promise.all([
           getAgencias(),
           getClientes(),
           getContas()
         ]);
 
+        // filtra a agencia na lista pelo id da url
         const foundAgency = agenciesData.find(a => a.id === id);
         
+        // se a agencia for encontrada
         if (foundAgency) {
+          // define como a agencia selecionada
           setAgency(foundAgency);
-          // Filter clients by agency code
+          
+          // filtra os clientes pelo codigo da agencia
           const agencyClients = clientsData.filter(
             client => client.codigoAgencia === foundAgency.codigo
           );
+
+          // define a lista de clientes associados
           setClients(agencyClients);
 
-          // Filter accounts by client CPF/CNPJ
+          // filtra as contas pelo cpfCnpj dos clientes
           const clientCpfCnpjs = agencyClients.map(client => client.cpfCnpj);
           const agencyAccounts = accountsData.filter(
             account => clientCpfCnpjs.includes(account.cpfCnpjCliente)
           );
+
+          // define as contas associadas aos clientes da agencia
           setAccounts(agencyAccounts);
         } else {
+          // se nao retorna um erro
           setError('Agência não encontrada');
         }
+
+        // encerra o carregamento
         setLoading(false);
       } catch (err) {
+        // retorna uma mensagem de erro caso aconteca um erro na requisicao
         setError('Erro ao carregar detalhes da agência');
+
+        // encerra o carregamento
         setLoading(false);
       }
     };
@@ -52,13 +80,16 @@ export function AgencyDetail() {
     fetchAgencyDetails();
   }, [id]);
 
+  // formata os valores numericos para brl
   const formatCurrency = (value: number) => {
+    // recebe um valor numerico e retorna uma string formatada em real brasileiro 
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
   };
 
+  // exibe a animacao de carregamento
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -67,6 +98,7 @@ export function AgencyDetail() {
     );
   }
 
+  // retorna um erro se a agencia não for encontrada
   if (error || !agency) {
     return (
       <div className="text-center text-red-600 p-4">
@@ -75,11 +107,14 @@ export function AgencyDetail() {
     );
   }
 
+  // carrega a pagina principal
   return (
     <div className="space-y-6">
       <Breadcrumb />
-      
+      { /* Breadcrumb no topo da pagina */ }
       <div className="flex items-center space-x-4">
+        { /* Botao que retorna para a lista de agencias */ }
+        { /* utiliza o navigate para navegar nas paginas */ }
         <button
           onClick={() => navigate('/agencies')}
           className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
@@ -90,7 +125,7 @@ export function AgencyDetail() {
       </div>
 
       <div className="grid gap-6">
-        {/* Agency Information */}
+        {/* Informacoes da Agencia */}
         <section className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex items-center mb-6">
             <Building2 className="h-6 w-6 text-[#004B8D] mr-2" />
@@ -138,7 +173,7 @@ export function AgencyDetail() {
           </div>
         </section>
 
-        {/* Clients Section */}
+        {/* Secao de Clientes */}
         <section className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
@@ -184,7 +219,7 @@ export function AgencyDetail() {
           </div>
         </section>
 
-        {/* Accounts Section */}
+        {/* Secao de Contas */}
         <section className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">

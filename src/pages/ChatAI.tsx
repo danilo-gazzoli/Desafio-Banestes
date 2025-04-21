@@ -1,45 +1,62 @@
 import React from 'react';
 import { Send, Bot, User, Loader } from 'lucide-react';
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
+import { Mensagem } from '../types';
 
 export function ChatAI() {
-  const [messages, setMessages] = React.useState<Message[]>([]);
+  // armazena a lista de mensagens 
+  const [messages, setMensagens] = React.useState<Mensagem[]>([]);
+
+  // armazena o texto atual como input
   const [input, setInput] = React.useState('');
+
+  // faz o gerenciamento do loading
   const [isLoading, setIsLoading] = React.useState(false);
+
+  // referencia a um elemento vazio para rolar a janela
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
+  // funcao que rola suavemente ate o elemento referenciado, garantindo que a ultima mensagem fique vizivel
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // sempre que a mensagem mudar executa o efeito de rolar para baixo
   React.useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
+  // chamado ao enviar formulario
   const handleSubmit = async (e: React.FormEvent) => {
+    // evita recarregar a pagina
     e.preventDefault();
+
+    // nada acontece se o campo estiver vazio
     if (!input.trim()) return;
 
+    // cria uma mensagem com o texto digitado
     const userMessage = { role: 'user' as const, content: input };
-    setMessages(prev => [...prev, userMessage]);
+
+    // adiciona ao array Mensagens
+    setMensagens(prev => [...prev, userMessage]);
+
+    // limpa o campo de input
     setInput('');
+
+    // inicia o carregamento
     setIsLoading(true);
 
-    // Simulate AI response (replace with actual API call)
+    // Simula resposta de IA (trocar com chamada da api)
     setTimeout(() => {
       const aiMessage = {
         role: 'assistant' as const,
         content: 'This is a simulated response. Replace this with actual AI integration.'
       };
-      setMessages(prev => [...prev, aiMessage]);
+      setMensagens(prev => [...prev, aiMessage]);
       setIsLoading(false);
     }, 1000);
   };
 
+  // carrega pagina principal
   return (
     <div className="flex flex-col h-[calc(100vh-6rem)] bg-white">
       {/* Header */}
@@ -48,7 +65,7 @@ export function ChatAI() {
         <p className="text-sm opacity-80">Ask me anything about banking services</p>
       </div>
 
-      {/* Chat Messages */}
+      {/* Chat de mensagens */}
       <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
         <div className="max-w-3xl mx-auto space-y-4">
           {messages.length === 0 && (
@@ -106,7 +123,7 @@ export function ChatAI() {
         </div>
       </div>
 
-      {/* Input Form */}
+      {/* Formulario de input */}
       <div className="border-t border-gray-200 p-4 bg-white">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           <div className="flex gap-2">
