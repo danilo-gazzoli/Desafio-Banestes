@@ -48,8 +48,8 @@ export function ChatAI() {
     // Simula resposta de IA (trocar com chamada da api)
     setTimeout(() => {
       const aiMessage = {
-        role: 'assistant' as const,
-        content: 'This is a simulated response. Replace this with actual AI integration.'
+        role: 'assistente' as const,
+        content: 'Essa é uma resposta simulada. Futuramente será feita integração com inteligência artificial.'
       };
       setMensagens(prev => [...prev, aiMessage]);
       setIsLoading(false);
@@ -62,7 +62,7 @@ export function ChatAI() {
       {/* Header */}
       <div className="bg-[#004B8D] text-white p-4 shadow-lg">
         <h1 className="text-xl font-semibold">Banestes AI Assistant</h1>
-        <p className="text-sm opacity-80">Ask me anything about banking services</p>
+        <p className="text-sm opacity-80">Me pergunte sobre os serviços bancários</p>
       </div>
 
       {/* Chat de mensagens */}
@@ -71,8 +71,8 @@ export function ChatAI() {
           {messages.length === 0 && (
             <div className="text-center py-8">
               <Bot className="w-12 h-12 mx-auto text-[#004B8D] mb-2" />
-              <h2 className="text-lg font-semibold text-[#004B8D]">Welcome to Banestes AI Assistant</h2>
-              <p className="text-gray-600 mt-2">How can I help you today?</p>
+              <h2 className="text-lg font-semibold text-[#004B8D]">Bem vindo ao Assistente de IA do Banestes</h2>
+              <p className="text-gray-600 mt-2">Como posso te ajudar?</p>
             </div>
           )}
           
