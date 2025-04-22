@@ -96,7 +96,7 @@ export function AgencyList() {
       <Breadcrumb />
       { /* Breadcrumb no topo da pagina */ }
       <div className="sm:flex sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Ag├¬ncias</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Agências</h1>
         <div className="mt-4 sm:mt-0">
           { /* SearchBar para busca rapida */ }
           <SearchBar
