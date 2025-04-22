@@ -36,8 +36,6 @@ Uma interface React/TypeScript para visualizar dados bancários (clientes, agên
   - Busca por CPF/CNPJ cliente ou tipo de conta  
   - Filtros avançados (tipo, faixa de saldo, faixa de limite de crédito)  
   - Paginação  
-- **Detalhe de Conta**  
-  - (Caso implementado) exibe campos de saldo, limite e crédito disponível  
 
 ### 📊 Dashboard
 - **Cartões de Overview**  
