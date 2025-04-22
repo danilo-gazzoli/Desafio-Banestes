@@ -1,54 +1,74 @@
-# React + TypeScript + Vite
+# Banestes Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Uma interface React/TypeScript para visualizar dados bancários (clientes, agências e contas) e gerar relatórios via dashboard.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Funcionalidades
 
-## Expanding the ESLint configuration
+### ⚙️ Navegação e Layout
+- **Layout Responsivo** com sidebar fixa (desktop) e menu hambúrguer (mobile).  
+- **Breadcrumb** para indicar a rota atual e permitir navegação rápida.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 📋 Listagens e Detalhes
+- **Lista de Clientes**  
+  - Busca por nome ou CPF/CNPJ  
+  - Filtros por estado civil  
+  - Paginação  
+  - Clique em qualquer linha para ir ao detalhe do cliente  
+- **Detalhe de Cliente**  
+  - Informações pessoais (nome, CPF/CNPJ, RG, data de nascimento, etc.)  
+  - Informações financeiras (renda anual, patrimônio)  
+  - Agência associada  
+  - Lista de contas vinculadas ao cliente  
+- **Lista de Agências**  
+  - Busca por nome, código ou endereço  
+  - Paginação  
+  - Linha clicável para ir ao detalhe da agência  
+- **Detalhe de Agência**  
+  - Dados básicos (código, nome, endereço)  
+  - Resumo com total de clientes e contas  
+  - Tabela de “clientes da agência” com link para detalhes  
+  - Tabela de “contas da agência” mostrando cliente, tipo, saldo e limite  
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### 💳 Contas
+- **Lista de Contas**  
+  - Busca por CPF/CNPJ cliente ou tipo de conta  
+  - Filtros avançados (tipo, faixa de saldo, faixa de limite de crédito)  
+  - Paginação  
+- **Detalhe de Conta**  
+  - (Caso implementado) exibe campos de saldo, limite e crédito disponível  
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 📊 Dashboard
+- **Cartões de Overview**  
+  - Total de clientes, total de contas, patrimônio total e saldo total  
+- **Gráficos de Distribuição**  
+  - Donut (tipo de conta)  
+  - Pizza (estado civil)  
+- **Performance de Agências**  
+  - Barras comparando número de clientes e volume de depósitos  
+- **Linha de Utilização de Crédito**  
+  - Limite total vs. crédito utilizado vs. crédito disponível  
+- **Indicadores de Risco**  
+  - Percentual e valor de contas com saldo negativo  
+  - Utilização média de crédito  
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 🤖 Chat AI (UI)
+- **ChatBot** que simula mensagens de IA:  
+  - Exibe histórico de mensagens com avatares distintos para usuário e “assistente”  
+  - Campo de entrada com botão de envio e loading spinner  
+  - Scroll automático para a última mensagem  
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+---
+
+## 📦 Instalação
+
+```bash
+# Clone este repositório
+git clone https://github.com/seu-usuario/banestes-frontend.git
+cd Desafio-Banestes
+
+# Instale dependências
+npm install
+# ou
+pnpm install
