@@ -102,7 +102,7 @@ export function AgencyList() {
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="Buscar por nome, c├│digo ou endere├ºo..."
+            placeholder="Buscar por nome, código ou endereço..."
           />
         </div>
       </div>
@@ -113,9 +113,9 @@ export function AgencyList() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C├│digo</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Endere├ºo</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Endereço</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">

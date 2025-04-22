@@ -124,7 +124,7 @@ export function ClientDetail() {
         { /* Botao que retorna para a lista de clientes*/ }
         { /* Usa o navigate para navegar entre paginas */ }
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/clients')}
           className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md"
           aria-label="Voltar para lista de clientes"
         >
