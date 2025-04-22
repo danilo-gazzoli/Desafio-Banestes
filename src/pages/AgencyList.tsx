@@ -96,13 +96,13 @@ export function AgencyList() {
       <Breadcrumb />
       { /* Breadcrumb no topo da pagina */ }
       <div className="sm:flex sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">Agências</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">Ag├¬ncias</h1>
         <div className="mt-4 sm:mt-0">
           { /* SearchBar para busca rapida */ }
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="Buscar por nome, código ou endereço..."
+            placeholder="Buscar por nome, c├│digo ou endere├ºo..."
           />
         </div>
       </div>
@@ -113,14 +113,13 @@ export function AgencyList() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">C├│digo</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Endereço</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Endere├ºo</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedAgencies.map((agency) => (
-                { /* Utiliza o use navigate para direcionar para a pagina de detalhes */ }
                 <tr 
                   key={agency.id}
   onClick={() => navigate(`/agencies/${agency.id}`)}
